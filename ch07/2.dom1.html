@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ch07/dom.html</title>
+</head>
+
+<body>
+  이름: <input type="text" name="" id="name" value="홍길동"><br>
+  나이: <input type="number" name="" id="age" value="20"><br>
+  <button>입력</button>
+  <hr>
+  <!-- <ul id="list"></ul> -->
+  <table border="1">
+    <thead>
+      <th>이름</th>
+      <th>나이</th>
+    </thead>
+    <tbody id="list">
+    </tbody>
+  </table>
+
+  <div style="display: none;">
+    <table>
+      <tr id="" result>
+        <td>홍길동</td>
+        <td>20</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- script를 밑에 선언하면 addEventListener('DOMContentLoaded') 필요없음 -->
+  <script>
+
+    //예제1. 버튼 클릭시 li추가
+    // document.querySelector('button').addEventListener('click', addContent);
+    function addContent() {
+      console.log(this); //this: event에서 호출하면 event발생하는 대상을 불러온다
+      let vname = document.getElementById('name').value; //id가 'name'인 value값
+      let vage = document.getElementById('age').value;   //id가 'age'인 value값
+      let li = document.createElement('li');
+      li.innerText = `${vname}, ${vage}`;
+
+      //ul하위요소로 li추가
+      document.getElementById('list').appendChild(li);
+
+      //입력항목 지우기
+      document.getElementById('name').value = ' ';
+      document.getElementById('age').value = ' ';
+      document.getElementById('name').focus() = ' ';
+    }
+
+
+    //예제2. 버튼 클릭시 테이블
+    document.querySelector('button').addEventListener('click', addTr);
+    function addTr() {
+      let vname = document.getElementById('name').value;
+      let vage = document.getElementById('age').value;
+
+      //입력값이 없으면 처리가 중단
+      if (!vname || !vage) {  //값이 0, ''(없는 값), null, undefined => false취급
+        alert('값을 입력하세요.');
+        return;
+      }
+
+      let elem = [vname, vage];
+      let tr = document.createElement('tr');
+      elem.forEach(el => {
+        let td = document.createElement('td');
+        td.innerText = el;
+        tr.append(td);
+      });
+      document.getElementById('list').append(tr);
+
+      //입력항목 지우기
+      document.getElementById('name').value = ' ';
+      document.getElementById('age').value = ' ';
+      document.getElementById('name').focus() = ' ';
+    }
+
+    function makeTr(elem) {
+      let tr = document.createElement('tr');
+      elem.forEach(el => {
+        let td = document.createElement('td');
+        td.innerText = el;
+        tr.append(td);
+      });
+      return tr;
+    }
+
+    function cloneElement() {
+      //cloneNode(true): 현재 노드를 복사해 반환 / 파라미터로 true/false 인자로 보냄 / 기본값 false(노드외형만 복사), true(노드 하위까지 다 복사)
+      let cloneTr = document.getElementById('result').cloneNode(true);
+      cloneTr.firstElementChild.innerText.document.getElementById('name').value;//tr의 첫 번째 자식
+      cloneTr.lastElementChild.innerText.document.getElementById('age').value;
+      return cloneTr;
+    }
+  </script>
+</body>
+
+</html>

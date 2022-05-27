@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dom.html</title>
+  <script>
+    //addEventListener():이벤트 등록 메서드(이벤트이름, 함수) 
+    //DOMContentLoaded: 페이지를 다 읽은 다음에 함수 실행
+    document.addEventListener('DOMContentLoaded', function () {
+      let friends = ['송도언', '소진영', '우영원'];
+      let newUl = document.querySelector('#newfriends');
+      friends.forEach((friend) => {
+        let li = document.createElement('li');
+        //mouse li태그의 범위에 들어서면
+        li.addEventListener('mouseover', function () {
+          console.log(this);  //event: this는 이벤트를 받는 대상(li)
+          this.style.background = 'yellow';
+        });
+        //mouse li태그의 범위에 벗어나면
+        li.addEventListener('mouseout', function () {
+          console.log(this);  //event: this는 이벤트를 받는 대상(li)
+          this.style.background = 'white';
+        });
+
+        let txt = document.createTextNode(friend);
+        li.appendChild(txt);  //appendChild():부모-자식 관계 형성(append도 가능)
+
+        //버튼 생성
+        let btn = document.createElement('button');
+        btn.innerText = '삭제';
+        btn.addEventListener('click', function () {
+          this.parentElement.remove(); //parentElement 부모태그
+        });
+        li.append(btn);
+
+        //ul > li
+        newUl.append(li);
+
+        //라이언, 어피치, 프로도, 콘
+        let friendList = document.querySelectorAll('#friends>li') //모두 갖고 옴
+        friendList.forEach((friend) => {
+          console.log(friend);
+          friend.addEventListener('mouseover', function () {
+            this.style.background = 'yellow';
+          });
+
+          friend.addEventListener('mouseout', function () {
+            this.style.background = 'white';
+          });
+
+          // let btn = document.createElement('button');
+          btn.innerText = '삭제';
+          friend.append(btn);
+        });
+
+
+      });
+
+    })
+  </script>
+</head>
+
+<body>
+  <ul id="friends">
+    <li class="animal">라이언</li>
+    <li class="fruit">어피치</li>
+    <li class="animal">프로도</li>
+    <li class="alien">콘
+      <ul class="keyword">
+        <li>3세</li>
+        <li>숏다리</li>
+        <li>초록괴수</li>
+      </ul>
+    </li>
+  </ul>
+  <ul class="icons">
+    <li>
+      <span>스몰</span>
+      <span>미디엄</span>
+      <span>빅</span>
+    </li>
+  </ul>
+  <ul id="newfriends">
+  </ul>
+</body>
+
+</html>

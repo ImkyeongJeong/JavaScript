@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dom2.html</title>
+</head>
+  <form name="frm" action="2.dom1.html">
+    first_name : <input type="text" name="fname" value="길동"><br>
+    last_name : <input type="text" name="lname" value="홍"><br>
+    phone : <input type="text" name="phone" value="010-5151-1212"><br>
+    age : <input type="number" name="age" value="20"><br>
+    <input type="submit" value="저장">
+    <input type="button" value="선택삭제">
+  </form>
+  <hr>
+  <table border="1">
+    <thead>
+        <tr>
+          <th>선택</th>
+          <th>first_name</th>
+          <th>last_name</th>
+          <th>phone</th>
+          <th>age</th>
+          <th>삭제</th>
+        </tr>
+    </thead>
+    <tbody id="list">
+    </tbody>
+  </table>
+
+  <script>
+    //리스트 출력
+    let memberList = [{
+      first_name: '임경',
+      last_name: '정',
+      phone: '010-1111-2222',
+      age: 20
+    }, {
+      first_name: '근형',
+      last_name: '박',
+      phone: '010-2222-3333',
+      age: 20
+    }, {
+      first_name: '진형',
+      last_name: '김',
+      phone: '010-3333-4444',
+      age: 20
+    }];
+
+    //페이지 로딩 될 때
+    // memberList.forEach(member => {
+    //   let inValues = [];
+    //   for(let field in member){
+    //     inValues.push(member[field]);
+    //   }
+    //   makeRow(inValues)
+    // });
+
+
+    //선택삭제
+    document.querySelector('form>input[type="button"]').addEventListener('click',delCheck);
+
+    function delCheck(){
+      let chkList = document.querySelectorAll('#list input[type="checkbox"]'); //input type이 checkbox인 것들을 담음
+      chkList.forEach(chk => { //갖고 온 요소들 중에서 checked가 true인 것들
+        if(chk.checked == true){
+          chk.parentElement.parentElement.remove(); //chk의 부모(td)의 부모(tr)을 제거
+        }
+      });
+    }
+
+    // console.log(document.forms.frm.fname.value); //forms를 이용한 form 값 불러오는법
+    //submit이 발생하면 매개값으로 넘어온(ev)로 기본 값 찾아가겠음
+    document.forms.frm.onsubmit = function(ev) {
+      ev.preventDefault();
+      //사용자 입력값
+      console.log(this); //this: form
+      let fn = this.fname.value;
+      let ln = this.lname.value;
+      let pn = this.phone.value;
+      let ag = this.age.value;
+      let inValues = [fn, ln, pn, ag];
+
+      //tr, td, input, button
+      let tr, td, chk, btn;
+
+      tr = document.createElement('tr');
+      inValues.forEach((val, ind) => { //td만드는 반복문
+        if(ind == 0){//체크박스 생성
+          td = document.createElement('td');
+          chk = document.createElement('input');
+          chk.setAttribute('type','checkbox'); //속성, 속성값이 매개값으로 필요
+          td.append(chk);
+          tr.append(td);
+        }
+        td = document.createElement('td');
+        td.innerHTML = val;
+        tr.append(td);
+
+        if(ind == inValues.length - 1){ //삭제버튼 생성 / inValues.length - 1: 나이td
+          td = document.createElement('td');
+          btn = document.createElement('button');
+          btn.addEventListener('click', (e) =>e.target.parentElement.parentElement.remove()); //button의 부모(td)의 부모(tr)를 삭제 ///event.target은 이벤트가 발생한 요소를 반환
+          btn.innerText = '삭제'
+          td.append(btn);
+          tr.append(td);
+        }
+      });
+      document.getElementById('list').append(tr);
+    }
+  </script>
+<body>
+
+</body>
+
+</html>
