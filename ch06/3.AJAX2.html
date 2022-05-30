@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AJAX1</title>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      let url = 'https://jsonplaceholder.typicode.com/photos';
+      let xhtp = new XMLHttpRequest();
+      xhtp.open('GET', url); //요청 초기화(get방식으로 url페이지 요청)
+      xhtp.send();           //서버에 요청을 보냄
+      xhtp.onload = function (){
+        console.log(JSON.parse(xhtp.responseText));
+        let result = JSON.parse(xhtp.responseText); //result값이 배열 형태로 들어있음
+
+        let filterAry = result.filter(elem => elem.albumId == 1 && elem.id <= 10); //element 값 중에서 albumId가 1이면서 id가 10보다 작거나 같은 값
+        let ul = document.createElement('ul');
+        filterAry.forEach(elem => { //element값으로 li
+          let li = document.createElement('li');
+          li.innerHTML = elem.id + ', ' + elem.title + '<span><img width="40px" src="'+ elem.thumbnailUrl +'"></span>';
+          ul.append(li);
+          document.getElementById('show').append(ul);
+        });
+      }
+    })
+  </script>
+</head>
+<body>
+  <div id="show"></div>
+</body>
+</html>

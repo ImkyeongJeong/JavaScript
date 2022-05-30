@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AJAX</title>
+  <style>
+    #show>a {
+      display: inline-block;
+      width: 5px;
+      margin-left: 8px;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <input type="text" name="" id="searchCenter" value="서울특별시">
+  <button id="searchBtn">센터찾기</button>
+
+  <div id="show"></div>
+
+  <script>
+    //페이지 로딩 될 때 실행
+    let dataAry = '';
+    let url = 'https://api.odcloud.kr/api/15077586/v1/centers?page=1&perPage=284&returnType=JSON&serviceKey=Wpi56%2BscR5jTGkHftd2DfyiO0InK3Zb5IP3NKDbFUmWLwqpLKexV0VZqoAs2ZPChLMySvOhEABf1%2Bg3aEJPZrw%3D%3D';
+    let xhtp = new XMLHttpRequest();
+    xhtp.open('GET', url);
+    xhtp.send();
+
+    //onreadystatechange 이벤트를 이용해 요청에 대한 응답 결과를 처리 (readyState 값이 변경되면 호출되는 이벤트)
+    //readySate 요청상태 값
+    //0: UNSET - 요청이 생성된 상태로 아직 서버에 요청을 보내지 않음
+    //1: OPENED - open() 함수가 호출된 상태로, 요청이 초기화 됐음
+    //2: HEADERS_RECEIVED - send() 함수 호출 후, 서버에 요청한 결과의 Header를 수신한 상태
+    //3: LOADING - send() 함수 호출 후, 서버에 요청한 결과를 받아오는 중
+    //4: DONE - 서버에 요청한 결과를 받은 상태이며, 결과는 성공이거나 실패했음을 알 수 있음
+    xhtp.onreadystatechange = function () {
+      console.log('요청상태', xhtp.readyState, '서버상태', xhtp.status);
+      if (xhtp.readyState == 4 && xhtp.status == 200) {
+        let result = JSON.parse(xhtp.responseText);
+        console.log(result);
+        dataAry = result.data; //원본데이터
+
+        //원본데이터의 배열 요소 중 sido와 검색한 값이 같은 값들을 배열(fAry)로 만듦
+        let fAry = dataAry.filter(center => {
+          let searchCenter = document.getElementById('searchCenter').value;
+          return center.sido == searchCenter;
+        });
+
+        let table = document.createElement('table');
+        table.setAttribute('border', 1); //<table border=1> border 속성을 추가
+        table.setAttribute('id', "tbl");
+        table.append(makeHeader());
+        table.append(makeBody(fAry, 1)); //dataAry던져주면 알아서 데이터를 만들도록
+        document.getElementById('show').append(table);
+        makePage(fAry);
+      }
+    }; //client <--> server
+
+
+    //센터찾기
+    document.getElementById('searchBtn').addEventListener('click', function () {
+      //버튼 클릭시 함수
+      let fAry = dataAry.filter(center => {
+        let searchCenter = document.getElementById('searchCenter').value;
+        return center.sido == searchCenter;
+      });
+      console.log(fAry);
+      document.getElementById('tbl').append(makeBody(fAry, 1));
+      makePage(fAry);
+    });
+
+    //배열안에 보고싶은 속성을 지정하면 지정된 항목만 thead tbody생성 (보고싶은 항목 추가하면 됨)
+    let fields = ['id', 'sido', 'centerName', 'address', 'phoneNumber'];
+
+    //header
+    function makeHeader() {
+      let thead = document.createElement('thead');
+      let tr = document.createElement('tr');
+      thead.append(tr);
+      fields.forEach(field => {
+        //fields의 배열을 돌면서 th를 생성
+        let th = document.createElement('th');
+        //th에 field값을 대문자로 넣겠다
+        th.innerText = field.toUpperCase();
+        tr.append(th);
+      });
+      return thead;
+    }
+
+    //body
+    function makeBody(ary, page) {
+      //page  => 1page : 1 ~ 10, 2page : 11 ~ 20, 3page : 21 ~ 30;
+      //index =>         0 ~ 9 ,         10 ~ 19
+
+      //startCtn, endCnt; 1: (page-1)*10 = 0, (page)*10-1 = 9;
+      let startCnt = (page - 1) * 10;
+      let endCtn = (page) * 10 - 1;
+
+      //이미만들어진 tbody가 있는지 체크
+      if (document.querySelector('#tbl>tbody') != null) {
+        //있으면 기존에 있던 tbody를 삭제하고 새로 만들어서 하위 요소로 붙임
+        document.querySelector('#tbl>tbody').remove();
+      };
+
+      //배열을 매개값으로 받음(dataAry)
+      let tbody = document.createElement('tbody');
+
+      ary.forEach((elem, idx) => {
+        if (idx >= startCnt && idx < endCtn)
+          tbody.append(makeTr(elem))
+      });
+      return tbody;
+    }
+
+    //tr
+    function makeTr(obj) {
+      //object값을 하나 받아오면 fields안의 속성만큼 td생성
+      let tr = document.createElement('tr');
+
+      fields.forEach(field => {
+
+        let td = document.createElement('td');
+
+        if (field != 'address') {
+          td.innerText = obj[field];
+        }
+
+        else if (field == 'address') {
+          let a = document.createElement('a');
+          a.setAttribute('href', `5.kakao_api.html?xpos=${obj.lat}&ypos=${obj.lng}&centerName=${obj.centerName}`);
+          a.setAttribute('target', '_blank');
+
+          a.innerText = obj[field];
+          td.append(a);
+        }
+        tr.append(td);
+      });
+      return tr;
+    }
+
+    //페이징
+    function makePage(ary) { //배열에 들어있는 값에 따라 totalPage
+      document.querySelectorAll('#show>a').forEach(e => e.remove());
+      let show = document.getElementById('show');
+      //ary => data:21개면? 1, 2, 3page 20=>2, 21=>2.1
+      let totalPage = Math.ceil(ary.length / 10); //ceil: 올림
+      for (let i = 1; i <= totalPage; i++) {
+        let a = document.createElement('a');
+        a.addEventListener('click', function (e) {
+          e.preventDefault(); //기본기능 차단
+          let page = e.target.innerText;
+          document.querySelector('#tbl').append(makeBody(ary,page));
+        });
+        a.innerText = i;
+        a.setAttribute('href', '#');
+        show.append(a);
+      }
+    }
+  </script>
+</body>
+
+</html>

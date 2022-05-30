@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AJAX</title>
+  <script>
+    //XMLHttpRequest() 자바스크립트의 내장객체: 비동기 통신 구현을 위한 객체
+    //페이지의 새로고침 없이도 URL에서 데이터를 가져올 수 있다.
+    let xhtp = new XMLHttpRequest();
+    xhtp.open('GET','MOCK_DATA.json'); //요청 초기화
+    xhtp.send();                       //서버에 요청을 보냄
+    
+    xhtp.onload = function(){ 
+      let result = JSON.parse(xhtp.responseText); //parse: json -> object형태로 변경
+      let ul = document.createElement('ul');
+      result.forEach(function (el) {
+        let li = document.createElement('li');
+        li.innerText = el.first_name + ', ' + el.email;
+        ul.append(li);
+      });
+      document.body.append(ul);
+    }
+  </script>
+</head>
+<body>
+  
+</body>
+</html>
