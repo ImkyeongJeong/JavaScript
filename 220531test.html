@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>평가 05.31</title>
+    <style>
+        #wrap {
+            width: 55%;
+            border: 1px solid red;
+
+            margin: 100px auto 100px;
+        }
+
+        #frm>div>label {
+            display: inline-block;
+            width: 30%;
+            text-align: center;
+            background-color: yellow;
+        }
+
+        #frm>div>input[type="text"] {
+            display: inline-block;
+            width: 40%;
+        }
+
+        div.btn {
+            position: relative;
+            left: 70%;
+            top: -80px;
+            display: inline-block;
+            width: 100px;
+            padding-left: 20px;
+        }
+
+        div.btn>input {
+            display: inline-block;
+            width: 80px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrap">
+        <div>
+            <form action="" id="frm" name="frm">
+                <div>
+                    <label for="">도서코드</label>
+                    <input type="text" name="bookCode">
+                </div>
+                <div>
+                    <label for="">도서명</label>
+                    <input type="text" name="bookTitle">
+                </div>
+                <div>
+                    <label for="">도서저자</label>
+                    <input type="text" name="bookAuthor">
+                </div>
+                <div>
+                    <label for="">도서출판사</label>
+                    <input type="text" name="bookPress">
+                </div>
+                <div>
+                    <label for="">도서금액</label>
+                    <input type="number" name="bookPrice">
+                </div>
+                <div class="btn">
+                    <input type="submit" value="저장">
+                    <input type="button" value="선택삭제">
+                </div>
+            </form>
+        </div>
+
+        <div id="content">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="thCheckbox"></th>
+                        <th>도서코드</th>
+                        <th>도서명</th>
+                        <th>도서저자</th>
+                        <th>도서출판사</th>
+                        <th>도서가격</th>
+                        <th>삭제</th>
+                    </tr>
+                </thead>
+                <tbody id="list">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let books = [{
+            bookCode: "J1234444",
+            bookTitle: "정임경이다",
+            bookAuthor: "정임경",
+            bookPress: "임경출판사",
+            bookPrice: "20000"
+        }, {
+            bookCode: "B1235555",
+            bookTitle: "자바스크립트파워북",
+            bookAuthor: "김기초",
+            bookPress: "굿출판사",
+            bookPrice: "15000"
+        }, {
+            bookCode: "B1236666",
+            bookTitle: "예제로배우는HTML",
+            bookAuthor: "김노드",
+            bookPress: "기린출판사",
+            bookPrice: "25000"
+        }];
+
+        //페이지 로딩 될 때
+        books.forEach(book => {
+            let inValues = [];
+            for (let field in book) {
+                inValues.push(book[field]);
+            }
+            makeRow(inValues)
+        });
+
+        //선택삭제
+        document.querySelector('.btn input[type="button"]').addEventListener('click', delCheck);
+        function delCheck() {
+            let chkList = document.querySelectorAll('#list input[type="checkbox"]');
+            chkList.forEach(chk => {
+                if (chk.checked == true) {
+                    chk.parentElement.parentElement.remove();
+                }
+            });
+        }
+
+        //전체선택
+        document.querySelector('#thCheckbox').addEventListener('click', function () {
+            let chkList = document.querySelectorAll('#list input[type="checkbox"]');
+            chkList.forEach(chk => {
+                chk.checked = document.querySelector('#thCheckbox').checked;
+            });
+        });
+
+        document.querySelector('#thCheckbox').addEventListener('click', function () {
+            let chkList = document.querySelectorAll('#list input[type="checkbox"]');
+            chkList.forEach(chk => {
+                if (chk.checked == false) {
+                    chk.setAttribute('checked', 'true');
+                } else if (chk.checked == true) {
+                    chk.setAttribute('checked', 'false');
+                }
+            });
+        });
+
+        //저장
+        document.forms.frm.onsubmit = function (ev) {
+            ev.preventDefault();
+            let bCode = this.bookCode.value;
+            let bTitle = this.bookTitle.value;
+            let bAuthor = this.bookAuthor.value;
+            let bPress = this.bookPress.value;
+            let bPrice = this.bookPrice.value;
+            let inValues = [bCode, bTitle, bAuthor, bPress, bPrice];
+            makeRow(inValues);
+
+            //값지우기
+            document.getElementsByName('bookCode')[0].value = ' ';
+            document.getElementsByName('bookTitle')[0].value = ' ';
+            document.getElementsByName('bookAuthor')[0].value = ' ';
+            document.getElementsByName('bookPress')[0].value = ' ';
+            document.getElementsByName('bookPrice')[0].value = ' ';
+            document.getElementsByName('bookCode')[0].focus() = ' ';
+        }
+
+        function makeRow(inValues) {
+            let tr, td, chk, btn;
+            tr = document.createElement('tr');
+
+            //td
+            inValues.forEach((val, ind) => {
+                //index[0]에 체크박스 생성
+                if (ind == 0) {
+                    td = document.createElement('td');
+                    chk = document.createElement('input');
+                    chk.setAttribute('type', 'checkbox');
+                    td.append(chk);
+                    tr.append(td);
+                }
+                td = document.createElement('td');
+                td.innerHTML = val;
+                tr.append(td);
+
+                //삭제버튼 생성
+                if (ind == inValues.length - 1) {
+                    td = document.createElement('td');
+                    btn = document.createElement('button');
+
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        e.target.parentElement.parentElement.remove();
+                    }, false);
+                    btn.innerText = '삭제'
+                    td.append(btn);
+                    tr.append(td);
+                }
+            });
+            document.getElementById('list').append(tr);
+        }
+
+    </script>
+</body>
+
+</html>
