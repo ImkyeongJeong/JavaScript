@@ -164,6 +164,12 @@
       document.getElementById('list').append(tr);
     }
     
+    let xhtp = new XMLHttpRequest();
+    xhtp.open('get', 'testServ');
+    xhtp.send();
+    xhtp.onload = function(){
+      let result = xhtp.responseXML;
+    }
   </script>
 </body>
 </html>

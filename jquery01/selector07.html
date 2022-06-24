@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+  <script>
+    $(document).ready(function(){
+      //contains(): 태그가 갖고 있는 text 검색(p안에 있는 태그까지 찾아냄)
+      $('#inner_1 p:contains("내용1")').css("color","blue");
+
+      //has(): 검색하고자 하는 태그를 포함하고 있는 태그 선별
+      //태그 자체를 찾는게 아닌 p태그 중 strong태그가 포함된 p태그를 반환하는 것
+      $('#inner_1 p:has(strong)').css("color","red");
+
+      //not(): 검색조건 중 제외할 것을 지정
+      $('#inner_2 p:not(:first)').css("color","green");
+      $('#inner_2 p').not(':last').css("background-color","pink");
+    });
+  </script>
+  <div id="outer_wrap">
+    <h1>콘텐츠 탐색 선택자</h1>
+    <section id="inner_1">
+      <h1>contains(), has()</h1>
+      <p>
+        <span>내용1</span>
+      </p>
+      <p>
+        <strong>내용2</strong>
+      </p>
+      <p>
+        <span>내용3</span>
+      </p>
+    </section>
+    <section id="inner_2">
+      <h1>not()</h1>
+      <p>내용4</p>
+      <p>내용5</p>
+      <p>내용6</p>
+    </section>
+
+<!-- ------------------------------------------- -->
+
+    <script>
+      $(document).ready(function(){
+        //find() - 하위 요소 중 검색(상위 요소 지정)
+        $('#in_1').find('.txt1').css("color","pink");
+
+        //filter() - 선택한 요소 중 검색(검색하고자 하는 범위 명확하게 지정필요)
+        $('#in_1 p').filter('.txt2').css("color", "green");
+
+        $('#in_2 p').filter(function(idx, obj){ //idx: 인덱스 obj:태그 자체를 갖고 옴
+          console.log(idx, obj);
+          return idx % 2 == 0;
+        }).css("color","red");
+      });
+    </script>
+    <div id="outer_content">
+      <h1>콘텐츠 탐색 선택자</h1>
+      <section id="in_1">
+        <h2>find(), filter()</h2>
+        <p class="txt1">내용1</p>
+        <p class="txt2">내용2</p>
+      </section>
+      <section id="in_2">
+        <h2>filter(function)</h2>
+        <p>index 0</p>
+        <p>index 1</p>
+        <p>index 2</p>
+        <p>index 3</p>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

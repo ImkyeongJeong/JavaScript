@@ -14,6 +14,20 @@
     <li>Apple</li>
     <li>Banana</li>
   </ul>
+
+<script>
+  let myform = document.forms.myform;
+  document.querySelector('.addBtn').addEventListener('click', function(){
+    myform.cmd.value = "insert";
+    myform.user.value = "admin";
+  });
+  myform.onsubmit = function() {
+    myform.cmd.value = "insert";
+    myform.user.value = "admin";
+    myform.passwd.value = "1234";
+  }
+</script>
+
 </body>
 
 </html>

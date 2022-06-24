@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+  <script>
+    $(document).ready(function(){
+      let obj = [
+        {"area" : "서울"},
+        { "area": "부산" },
+        { "area": "전주" }
+      ];
+
+      //each() -> object 와 배열 모두에서 사용할 수 있는 반복 함수
+      let ulTag = $('<ul/>');
+      $(obj).each(function(idx, item){
+        console.log(idx + " : " , item);
+        let liTag = $('<li/>').text(item.area);
+        ulTag.append(liTag);
+      });
+      $('#ex01').append(ulTag);
+
+      //
+      console.log("=================");
+      $.each(obj, function(idx, item){
+        console.log(idx + " : ", item);
+      })
+
+
+      //태그를 찾아 each돌려 내용 출력해보기
+      console.log("=================");
+      $('#menu1 li').each(function(idx, obj){
+        console.log(idx + " : " + $(obj).text());
+        console.log(idx + " : ", obj.textContent);
+      });
+
+      //위와 문법만 다름
+      console.log("=================");
+      $.each($('#menu2 li'), function (idx, obj) {
+        console.log(idx + " : " + $(obj).text());
+        console.log(idx + " : ", obj.textContent);
+      });
+
+      console.log("=================");
+      $('#ex01 li').each(function(idx){
+        console.log(idx + " : ", $(this).text());
+      });
+    });
+  </script>
+  <div id="ex01">
+    <h1>배열 메서드</h1>
+    <ul id="menu1">
+      <li>내용1-1</li>
+      <li>내용1-2</li>
+      <li>내용1-3</li>
+    </ul>
+    <ul id="menu2">
+      <li>내용2-1</li>
+      <li>내용2-2</li>
+      <li>내용2-3</li>
+    </ul>
+  </div>
+
+
+  <script>
+    $(document).ready(function(){
+      let arr1 = [
+        {"area" : "서울", "dept" : "영업", "name" : "무대리"},
+        {"area" : "부산", "dept" : "영업", "name" : "홍과장"},
+        {"area" : "대전", "dept" : "생산", "name" : "박사장"}
+      ];
+
+      //$.map(): 값을 리턴할 값을 모아서 새로운 배열을 생성
+      let arr2 = $.map(arr1, function(obj, idx){
+        if(obj.area == "서울"){
+          return obj;
+        }
+      });
+
+      $(arr2).each(function(idx, obj){
+        console.log(idx + "dd : " , obj);
+      })
+
+
+      //$.grep(): 새로운 객체로 담고 안 담고 결정/ 오름차순으로 정렬해서 반환
+      let arr3 = $.grep(arr1, function(obj, idx){
+        if(obj.dept == "영업"){
+          return true;
+        }else{
+          return false;
+        }
+      });
+      console.log(arr3);
+
+
+    //예제 실습
+    function appendTag(tag, datas){ //넘겨받은 tag에 datas를 append
+      $(datas).each(function(idx, obj){
+        $(tag).append(
+          $('<li/>').text(
+            "지역 : " +obj.area + ", 부서 : " +obj.dept + ", 이름 : " + obj.name
+          )
+        );
+      });
+    }
+
+    //근무지역이 서울인 데이터(map을 이용해 원본 데이터를 넣음)
+    let areaDatas = $.map(arr1, function(obj, idx){
+      if(obj.area == "서울"){
+        //객체에 데이터 추가 혹은 삭제
+        return obj;
+      }
+    });
+    
+    let ulTag = $('#ex02 ul:first');
+    appendTag(ulTag, areaDatas);
+
+    //부서가 영업인 데이터
+    let deptDatas = $.grep(arr1, function (obj, idx) {
+      if (obj.dept == "영업") {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    ulTag = $((ulTag).next());
+    appendTag(ulTag, deptDatas);
+
+
+    deptDatas = $.map(arr1, function (obj, idx) {
+      if (obj.dept == "생산") {
+        return obj;
+      }
+    });
+    ulTag = $((ulTag).next());
+    appendTag(ulTag, deptDatas);
+  });
+
+
+  //제이쿼리 + 자바스크립트(forEach) 제이쿼리는 map에 바로 each사용 불가
+  console.log("제이쿼리+자바스크립트");
+  $.map(arr1, function(obj,idx){
+    if(obj.dept == "영업"){
+      return obj;
+    }
+  }).forEach(function(el, idx){
+    console.log(idx + " : ", el);
+  })
+  </script>
+  <div id="ex02">
+    <!-- 근무지역 : 서울 -->
+    <ul></ul>
+    <!-- 부서 : 영업 -->
+    <ul></ul>
+    <!-- 부서 : 생산 -->
+    <ul></ul>
+  </div>
+
+  <script>
+    $(document).ready(function(){
+      let arr1 = [
+        "서울", "대전", "부산", "전주"
+      ];
+      
+      let arr2 = [
+        "한국", "미국", "일본", "중국"
+      ];
+      
+      let obj = {"name" : "정부장", "area" : "서울"}
+
+      let arr3 = [
+        {"name" : "김대리", "area" : "대전"},
+        { "name": "이사원", "area": "서울" },
+        { "name": "하부장", "area": "부산" },
+        { "name": "유전무", "area": "전주" }
+      ];
+
+      //inArray() -> 배열 안에 데이터가 있다면 인덱스, 없다면 -1
+      if($.inArray("부산", arr1) != -1){
+        console.log("해당 데이터가 존재합니다.")
+      }
+
+      //isArray() -> 매개변수가 배열인지 여부를 확인
+      console.log("arr2의 배열여부 : ", $.isArray(arr2));
+      console.log("obj의 배열여부 : ", $.isArray(obj));
+
+      //merge() -> 두개의 배열을 하나의 배열로 변환
+      // $($.merge(arr2, arr1)).each(function(idx, obj){
+      //   console.log(idx + " : ", obj);
+      // })
+
+      //예제실습
+      $(arr1).each(function(idx, obj){
+        $('#ex03 div:contains("도시")').append(
+          $('<p/>').text(obj)
+        );
+      });
+
+      $(arr2).each(function(idx, obj){
+        $('#ex03 div:contains("국가")').append(
+          $('<p>').text(obj)
+        );
+      });
+
+      $(arr3).each(function(idx, obj){
+        $('#ex03 div:first > p:contains('+ obj.area +')').append(
+          $('<p/>').text("이름 : " + obj.name)
+        );
+      });
+
+    });
+  </script>
+  <div id="ex03">
+    <div>
+      <h3>대한민국 도시</h3>
+    </div>
+    <div>
+      <h3>국가</h3>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function(){
+      //index() -> 검색조건에 해당하는 요소의 인덱스 값 갖고 옴
+      let index = $('#ex04 li').index($('#list3')); //index(태그자체)
+      console.log(index);                           //2
+      let tag = $('#ex04 li').eq(index);            //해당되는 인덱스 태그값 갖고 옴
+      console.log(tag.text());
+    });
+  </script>
+  <div id="ex04">
+    <ul>
+      <li>내용1</li>
+      <li>내용2</li>
+      <li id="list3">내용3</li>
+      <li>내용4</li>
+    </ul>
+  </div>
+</body>
+</html>
