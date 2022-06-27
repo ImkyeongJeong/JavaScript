@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+  <button type="button" id="btn">버튼</button>
+  <script>
+    //단일 이벤트 등록 -> 이벤트에 대응되는 메서드 호출
+    $('#btn').click(function(){ //익명함수: 이름 없는 함수, 즉시 실행이 필요할 경우 사용
+      $('body').append('<p>단일 이벤트 등록</p>');
+    });
+
+    //그룹 이벤트 등록 -> 여러 이벤트를 동시에 등록(매개변수 2가지(등록할 이벤트, 동작하고자하는 내용))
+    // $('#btn').on('click mouseover',function(){
+    //   $('body').append('<p>그룹 이벤트 등록</p>')
+    // }); 
+
+    $('#btn').on({
+      "click" : function() {alert("그룹 이벤트로 click 이벤트 등록");},
+      "mouseover" : function() {$('body').append('<p>그룹 이벤트 등록</p>');}
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+  <script>
+    $(document).ready(function(){
+      /*
+      $.ajax(
+        //접속할 주소
+        url: ,
+        //데이터를 전송하는 방식(get, post)
+        type: ,
+        //전송할 데이터
+        data: ,
+        //전송할 데이터 content-type:application/x-www-form-urlencoded
+        contentType: ,
+        //리턴되는 데이터 타입
+        dataType: ,
+        //전송에 성공했을 경우
+        success: function(data){
+        },
+        //전송에 실패했을 경우
+        error: function(reject){
+        }
+        //async 필드 : 동기식과 비동기식을 제어(기본:true), false-동기식으로 동작
+        //beforeSend: 전송 전 이루어져야하는 작업(function)등록
+      );*/
+
+      $.ajax({
+        url: 'MOCK_DATA.json',
+        dataType: 'json',
+        success: function(data){
+          //테이블 생성
+          let table = $('<table />');
+          
+          //테이블 헤더 구성
+          let trTag = $('<tr />');
+          let header = data[0];
+
+          for(let field in header){
+            $(trTag).append(
+              $('<th/>').text(field)
+              );
+          }
+          $(table).append(trTag);
+
+          //테이블 각 행 구성
+          $(data).each(function(idx, obj){
+            trTag = $('<tr />');
+            for (let field in header) {
+              $(trTag).append(
+                $('<td/>').text(obj[field])
+                );
+            }
+            $(table).append(trTag);
+          });
+          //div 태그에 테이블 추가
+          $('#content').append(table);
+        },
+        error: function(reject){
+          console.log(reject);
+        }
+      })
+    });
+  </script> 
+  <div id="content"></div>
+</body>
+</html>
