@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      let info = new Vue({
+        el : '#app',
+        data : {
+          myName : '',
+          area : '',
+          skill : [],
+          support : '',
+          myText : ''
+        },
+        computed: {
+          skillList: function () {
+            let result = '';
+            for (let i = 0; i < this.skill.length; i++) {
+              result += this.skill[i] + ", ";
+            }
+            return result;
+          }
+        }
+
+      });
+    });
+  </script>
+  <div id="app">
+    <h1>입력폼활용</h1>
+    <label>이름: <input type="text" v-model.lazy="myName"></label><br>
+    <label>사는 곳: <input type="text" v-model.lazy="area"></label><br>
+    <label>기술스택:<br>
+      <input type="checkbox" v-model="skill" value="Java">Java
+      <input type="checkbox" v-model="skill" value="Javascript">Javascript
+      <input type="checkbox" v-model="skill" value="c, c++">c, c++
+      <input type="checkbox" v-model="skill" value="go">go
+      <input type="checkbox" v-model="skill" value="python">python
+    </label>
+    <label>지원분야:<br>
+      <input type="radio" v-model="support" value="Front">Front
+      <input type="radio" v-model="support" value="Back">Back
+      <input type="radio" v-model="support" value="Full">Full
+    </label><br><br>
+    하고싶은 말<br>
+    <textarea v-model="myText"></textarea>
+    <!-- 저는 홍길동이고 사는 곳은 어디이며, 기술스택은 무엇무엇이고 지원분야는 뭐입니다.-->
+    <p>저는 {{ myName }}이고, 사는 곳은 {{ area }}이며,<br>
+       기술스택은 {{ skillList }} 지원분야는 {{ support }}입니다.<br>
+       {{myText}}</p>
+  </div>
+</body>
+</html>

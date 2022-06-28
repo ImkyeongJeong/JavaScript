@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <style>
+    .blue-underline{
+      text-decoration: underline;
+      text-decoration-color: blue;
+    }
+    .darkBack{
+      background-color: black;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      let exam = new Vue({
+        el: '#app',
+        data : {
+          myURL : 'https://www.naver.com',
+          fileName : '고양이.jpg',
+          myAlignLeft: "left",
+          myAlignRight: "right",
+          myAlignCenter: "Center",
+          myColor : 'red',
+          mySize : '150%',
+          myBackColor : 'yellow',
+          myClass : 'blue-underline',
+          myClass2 : 'darkBack'
+        }
+      });
+    });
+  </script>
+  <div id="app">
+    <p><a :href="myURL">네이버로 연결</a></p>
+    <p><img :src="fileName">이미지로 표시</p>
+    <p :align="myAlignLeft">텍스트를 왼쪽 정렬</p>
+    <p :align="myAlignRight">텍스트를 오른쪽 정렬</p>
+    <p :align="myAlignCenter">텍스트를 가운데 정렬</p>
+    <p :style="{color : myColor}">인라인 스타일로 글자색을 빨간색으로</p> 
+    <p :style="[{color : myColor},{fontSize : mySize}]">인라인 스타일로 글자크기를 150% 크게 빨간색으로</p>
+    <p :style="[{color : myColor},{fontSize : mySize},{backgroundColor:myBackColor}]">인라인 스타일로 글자크기를 150% 크게 빨간색으로 배경은 노란색으로</p>
+    <p :class="myClass">blue-underline(파란색 밑줄) class 지정</p>
+    <p :class="[myClass, myClass2]">blue-underline(파란색 밑줄), dark(배경은 검은색으로) class 지정</p>
+  </div>
+</body>
+</html>
