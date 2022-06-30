@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <style>
+    .tag{
+      border: 1px solid gray;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      let v1 = new Vue({
+        el : '#btn',
+        methods : {
+          warn : function(message, event){
+            if(event){
+              console.log(event.target);
+              console.log(event.currentTarget);
+              console.log(event);
+              
+              event.preventDefault();
+              //event.preventDefault : 이벤트 전파X, 이벤트의 기본동작을 중단
+              //event.stopPropagation : 이벤트 버블링, 캡쳐링의 전파를 막는 기능
+            }
+            alert(message);
+          }
+        }
+      });
+    });
+    //1. 캡쳐링: 이벤트가 하위 요소로 전파되는 단계
+    //2. 타깃 단계 – 이벤트가 실제 타깃 요소에 전달되는 단계
+    //3. 버블링: 이벤트가 상위 요소로 전파되는 단계(동일 이벤트가 있다면 선택된 이벤트만 발생하는 것이 아닌  감싸고 있는 최상위 요소를 만날 때까지 이벤트가 발생하는 현상)
+    // 이벤트 수식어 -> on 디렉티브에 연결하는 이벤트 동작을 제어
+    // .stop -> 이벤트 전파 중단(stopPropagation)
+    // .prevent -> 기본이벤트의 실행을 중단(preventDefault)
+    // .capture -> 이벤트 캡처링 중단(포착단계에서만 이벤트를 발생시킴, 우선순위를 무시하고 가장 먼저 실행)
+    // .self -> Event객체의 target == currentTarget인 경우만 동작(발생단계에서만 이벤트를 발생시킴, 오로지 자기 자신만 호출함)
+    // .once -> 이벤트를 한번만 실행시킴
+    // .passive -> wheel 이벤트 동작 시 실제 화면에서 스크롤 된 것과 로직 분리
+      let v2 = new Vue({
+        el : '#app',
+        data: {
+          style: 'tag',
+          message: ''
+        },
+        methods: {
+          printMessage: function (message) {
+            this.message = message;
+            alert(this.message);
+          },
+          changeMessage : function(){
+            if(event){
+              this.message = '이벤트 실행 target : ' + event.target;
+            }
+          },
+          alertExcute : function(){
+            alert('이벤트 핸들러 복수 등록');
+          }
+        }
+      });
+  </script>
+
+  <!-- event핸들러를 메서드를 사용하려면 이벤트를 연결시킬 때 객체가 넘어가도록 해야함 -->
+  <button id="btn" v-on:click="warn('Form cannot be submitted yet', $event)">
+    submit
+  </button>
+  <div id="app" v-bind:class="style">
+    <form action="http://www.naver.com" v-bind:class="style" v-on:click="printMessage('form 태그 선택)" v-on:submit.prevent>
+      <div v-bind:class="style" v-on:click.stop="printMessage('div 태그 선택) ">
+        <p v-bind:class="style" v-on:click.self.once="printMessage('p 태그 선택) ">
+          <a v-bind:class="style" href="http://www.google.com" v-on:click.prevent="printMessage('a 태그 선택)">
+            구글로 이동
+          </a>
+          {{ message }}
+        </p>
+      </div>
+        <button>form</button>
+    </form>
+  </div>
+    <div :class="style">
+      <!-- 복수로 넘겨줄 땐 ()붙임 -->
+      <span @click="changeMessage($event), alertExcute()">이벤트 핸들러 복수 실행</span>
+    </div><hr>
+
+  <script>
+    //computed: 데이터를 가볍게 연산시켜서 반환
+    //watch: 데이터 변화를 감지해서 필요한 연산
+    document.addEventListener('DOMContentLoaded', function(){
+      var v3 = new Vue({
+        el : '#app2',
+        data : {
+          price : 0,
+          count : 0,
+          myText: '',
+        },
+        computed : {
+          //산출 프로퍼티
+          sum: function(){
+            return this.price * this.count;
+          },
+          taxIncluded : function(){
+            return this.sum * 1.1;
+          },
+          remainig: function(){
+            return 140 - this.myText.length;
+          },
+          computedColor : function(){
+            let col = 'green';
+
+            if(this.remainig < 20){
+              col = 'orange';
+            }
+
+            if(this.remainig < 1){
+              col = 'red';
+            }
+            return col;
+          }
+        },
+        methods:{
+          getDate : function(){
+            alert(this.printDate);
+          },
+          printDate : function(){
+            return '오늘 날짜 : ' + Date.now();
+          }
+        }
+      });
+    });
+  </script>
+  <div id="app2">
+    <input v-model.number="price" type="number">원<br>
+    <input v-model.number="count" type="number">개<br>
+    <p>합계 : {{sum}}</p>
+    <p>부가세 포함 금액 : {{taxIncluded}}</p>
+    <br>
+    <br>
+    <p>감상은 140자 이내로 입력해주세요.</p>
+    <textarea v-model="myText"></textarea>
+    <p v:bind:style="{color: computedColor}">남은 글자는 {{ remainig }} 입니다.</p>
+    <p v-text="printDate()"></p>
+    <button>날짜</button>
+  </div><hr>
+
+  <script>
+    let dataList = ['설악산', '한라산', '북한산', '백두산', '지리산'];
+
+    //자바스크립트
+    // document.addEventListener('DOMContentLoaded', function () {
+
+    //   init();
+
+    //   document.getElementById('app3')
+    //     .querySelector('input[type="text"]')
+    //     .addEventListener('change', changeData);
+
+    //   function changeData() {
+    //     let inVal = document.getElementById('app3').querySelector('input[type="text"]').value;
+
+    //     let ulTag = document.getElementById('app3').querySelector('ul');
+    //     ulTag.innerHTML = '';
+
+    //     if (inVal != '') {
+    //       dataList.forEach(function (val, idx) {
+    //         if (val.includes(inVal)) {
+    //           let liTag = document.createElement('li');
+    //           liTag.textContent = val;
+    //           ulTag.appendChild(liTag);
+    //         }
+    //       })
+    //     } else {
+    //       init();
+    //     }
+    //   }
+
+    //   function init() {
+    //     dataList.forEach(function (val, idx) {
+    //       let liTag = document.createElement('li');
+    //       liTag.textContent = val;
+    //       document.getElementById('app3').querySelector('ul').appendChild(liTag);
+    //     });
+    //   }
+    // });
+
+    // //제이쿼리
+    // $(document).ready(function () {
+
+    //   init();
+
+    //   $('#app3 > input:text:eq(0)').on('change', changeData);
+
+    //   function changeData() {
+    //     $('#app3 > ul:first').empty();
+
+    //     let keyword = $('#app3 > input:text:eq(0)').val();
+    //     if (keyword != '') {
+    //       $(dataList).each(function (idx, val) {
+    //         if (val.match(keyword)) {
+    //           $('#app3 > ul:first').append(
+    //             $('<li />').text(val)
+    //           );
+    //         }
+    //       })
+    //     } else {
+    //       init();
+    //     }
+    //   }
+
+
+    //   function init() {
+    //     $(dataList).each(function (idx, val) {
+    //       $('#app3 > ul:first').append(
+    //         $('<li />').text(val)
+    //       );
+    //     });
+    //   }
+    // });
+
+    //vue
+    document.addEventListener('DOMContentLoaded', function(){
+      var v4 = new Vue({
+        el : '#app3',
+        data : {
+          findWord : '',
+          items : dataList
+        },
+        computed:{
+          findItems : function(){
+            if(this.findWord){ //findWord값이 존재할 때
+              return this.items.filter(function(value){ //filter: 배열로 생성
+                  return (value.indexOf(this.findWord) > -1);
+                  }, this);
+            } else {
+              return this.items;
+            }
+          }
+        }
+      });
+    });
+
+  </script>
+  <div id="app3">
+    <!-- input의 value 속성이 비어있으면 모든 데이터가 보이고 검색을 하면 해당되는 데이터만 보이도록-->
+    <input type="text" v-model="findWord">
+    <ul>
+      <!-- 태그가 반복됨 5번 반복-->
+      <li v-for="item in findItems">{{item}}</li> 
+    </ul>
+  </div><hr>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var v5 = new Vue({
+        el : '#app4',
+        data : {
+          forbiddenText : '아니야',
+          inputText : '오늘은 날씨가 좋습니다.',
+          restSec:5,
+          timerObj : null
+        },
+        methods : {
+          startTimer : function(){
+            clearInterval(this.timerObj); //반복 중단
+            this.restSec = 5;
+            this.timerObj = setInterval(()=>{this.restSec--}, 1000);//특정시간마다 반복해야 되는 것 function지정
+          }
+        },
+        watch : {
+          //inputText가 변동이 되면
+          inputText : function(){
+            let pos = this.inputText.indexOf(this.forbiddenText);
+            if(pos >= 0){ //inputText안에 금지단어가 포함되어있다면
+              alert(this.forbiddenText + '는 입력할 수 없습니다.');
+              //watch는 리턴하지 않아서 덮어씌어야 함
+              this.inputText = this.inputText.substr(0, pos); //입력된 값 중 금지단어만 삭제됨
+            }
+          },
+          restSec: function () {
+            if (this.restSec <= 0) {
+              alert("제한시간입니다.");
+              clearInterval(this.timerObj); //반복 중단
+            }
+          }
+        },
+      });
+    });
+  </script>
+  <div id="app4">
+    <p>금지문자 [{{forhiddenText}}]</p>
+    <textarea v-model="inputText"></textarea>
+    <br>
+    <br>
+    <p>앞으로 {{ restSec }}</p>
+    <button v-on:click="startTimer">START</button>
+  </div>
+</body>
+</html>

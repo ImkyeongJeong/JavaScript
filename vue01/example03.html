@@ -10,6 +10,8 @@
 <body>
   <script>
     document.addEventListener('DOMContentLoaded', function(){
+      //데이터 바인딩
+
       let v1 = new Vue({
         el : 'div',
         data : {
@@ -18,8 +20,18 @@
           result: 0
         },
         methods : {
-          sum : function(){
-            
+          // this는 Vue의 인스턴스를 가르킴
+          plus : function(){
+            this.result = this.num1 + this.num2;
+          },
+          minus: function(){
+            this.result = this.num1 - this.num2;
+          },
+          multiply: function(){
+            this.result = this.num1 * this.num2;
+          },
+          divide: function(){
+            this.result = this.num1 / this.num2;
           }
         }
       });
@@ -29,8 +41,8 @@
     <h1>간단한 계산기</h1>
     <input type="number" v-model.number="num1">
     <input type="number" v-model.number="num2">
-    <button v-on:click="sum">덧셈계산</button>
-    <button v-on:click="subtraction">뺄셈계산</button>
+    <button v-on:click="plus">덧셈계산</button>
+    <button v-on:click="minus">뺄셈계산</button>
     <button v-on:click="multiply">곱셈계산</button>
     <button v-on:click="divide">나눗셈계산</button>
     <!-- 결과는 4입니다. -->
