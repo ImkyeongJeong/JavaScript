@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      //component
+      //1.html 태그로 구성
+      //2. 인접(형제) 태그가 아닌 부모-자식관계로 구성
+      let component = {
+        template : `<div>Hello, vue.js
+                      <br>
+                      <p>{{ text }}</p>
+                      <input v-model="text">
+                    </div>`,
+
+       //data: 함수에 정의하되 반환 값을 반드시 객체로 구성 (필드 -> template 속성에서 사용하는 프로퍼티)
+        data : function(){
+          return {
+            message : 'ㅋㅓㅁㅍㅗㄴㅓㄴㅌㅡ'
+          }
+        },
+
+        //props표기방법 : 배열(간단하게 정의할 때), 객체(각 프로퍼티의 옵션 정의할 때)
+        //외부에서 받아와야 할 때 선언(위로 올라가지 않음)
+        //props : ['text'],
+        props : {
+          text : {
+            type : [String, Number],
+            required : true,
+            default : '기본값입니다.' //객체나 배열과 같은 참조타입은 반드시 function() {return object or array}
+          }
+        },
+        computed : {},
+        methods : {},
+        watch : {}
+      };
+
+      // 컴포넌트 전역 등록 -> html의 모든 vue 인스턴스에서 사용가능
+      //Vue.component('static-component', component);
+
+      // 컴포넌트 지역 등록(인스턴스등록) -> 포함된 vue 인스턴스의 범위 안에서만 사용 가능
+      new Vue({
+        el : '#app',
+        components : {
+          'instance-component' : component
+        },
+        data : {
+          data : 'TEST!!!!!!!!'
+        }
+      });
+    });
+  </script>
+  <div id="app">
+    <!--<static-component></static-component>-->
+    <input v-model="data">
+    <!-- v-bind:= vue인스턴스를 사용-->
+    <instance-component v-bind:text="data"></instance-component>
+  </div>
+  <hr>
+  <hr>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const component = {
+        template : `<div>
+                      숫자 : {{ num +1 }}<br>
+                      문자열 : {{ str + ':문자열' }}<br>
+                      짝수? : {{ even }}<br>
+                      객체 : {{ obj.message }}
+                    </div>`,
+        props : {
+          num : {
+            type : Number,
+            required : true
+          },
+          str : {
+            type : String,
+            default : '안녕'
+          },
+          obj : {
+            type : Object,
+            default : () => {
+              return { message : '안녕, 객체로부터'}
+            }
+          },
+          even : {
+            validator : (value) => {
+              return (value % 2) == 0;
+            }
+          }
+        }
+      }
+
+      new Vue({
+        el : '#app2',
+        components : {
+          'my-componente' : component
+        },
+        data : {
+          myNumber : 44,
+          passedString : '안녕, 부모로부터',
+          passedObject : {
+            message : '넘겨준 객체'
+          }
+        }
+      });
+    });
+  </script>
+  <div id="app2">
+    <!-- component와 Vue 인스턴스와 연결 -->
+    <my-componente :num="myNumber" 
+                    :str="passedString" 
+                    :even="myNumber" 
+                    :obj="passedObject"></my-componente>
+  </div>
+</body>
+</html>
