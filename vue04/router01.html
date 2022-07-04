@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-router@3.5.3/dist/vue-router.js"></script>
+</head>
+<body>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const router = new VueRouter({
+        //페이지 왔다갔다가 아닌 한 페이지 내에서 부분적으로 나눠서 페이지가 전환되는 것 처럼 설정
+        routes : [
+          {
+            path : '/foo',
+            component : {
+              template : '<div>foo</div>'
+            }
+          },
+          {
+            path: '/bar',
+            component: {
+              template: '<div>bar</div>'
+            }
+          },
+          {
+            //:id => 넘겨주고자 하는 값
+            path: '/user/:id',
+            component: {
+              template: '<div>User {{this.$route.params.id}}</div>'
+            }
+          }
+        ]
+      })
+       new Vue({
+        router,
+
+       }).$mount('#app');
+    });
+  </script>
+  <div id="app">
+    <h1>Hello App!</h1>
+    <p>
+      <!-- to : path를 값으로 받음 -->
+      <router-link to="/foo">Go to Foo</router-link>
+      <router-link to="/bar">Go to Bar</router-link>
+      <router-link to="/user/1234">Go to User</router-link>
+    </p>
+    <router-view></router-view>
+  </div>
+</body>
+</html>

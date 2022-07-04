@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function(){
+      let bookComponent = function(resolve, reject){
+        setTimeout(function(){
+          resolve({
+            //컴포넌트를 구성하는 객체
+            templage : `<div>
+                          <h1>비동기 컴포넌트</h1>
+                        </div>`
+          });
+        }, 1000);
+      };
+
+      new Vue({
+        el : '#app',
+        components : {
+          'book-component' : bookComponent
+        }
+      });
+    });
+  </script>
+  <div id="app">
+    <book-component></book-component>
+  </div>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+  <!-- slot: 부모 컴포넌트에서 자식 컴포넌트의 엘리먼트를 지정할때 사용 (다른 컴포넌트를 또 다른 방식으로 주입시키는 방법)-->
+  <script>
+    document.addEventListener("DOMContentLoaded", function(){
+      let component = {
+        template : `<div>
+                      <slot name="header"></slot>
+                      <br>
+                      <h1>컴포넌트 데이터입니다.</h1>
+                      {{ text }}
+                      <br>
+                      <br><slot name="footer"></slot>
+                    </div>`,
+        props : ['text']
+      }
+
+      new Vue({
+        el : '#app',
+        data : {
+          message : ''
+        },
+        components : {
+          'my-component' : component
+        }
+      });
+    });
+  </script>
+  <!-- 실질적인 데이터는 부모가 갖고 있음 / 들어갈 땐 자식한테 속한다. -->
+  <div id="app">
+    <input type="text" v-model="message">
+    <my-component v-bind:text="'부모 컴포넌트에서 데이터를 넘겨줍니다.'">
+      <p slot="header"><em>헤더입니다.</em></p>
+      <h3 slot="footer">푸터입니다.</h3>
+    </my-component>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function(){
+      let formComponent ={
+        template : `<div>
+                      <form>
+                        <slot></slot>
+                        <slot name=titleSlot></slot>
+                        <input type="text" id="title"><br>
+                        <slot name=authorSlot></slot>
+                        <input type="text" id="author"><br>
+                      </form>
+                    </div>`,
+        props : ['title', 'author']
+      };
+
+      new Vue({
+        el : '#app2',
+        data : {
+          titleLabel : '제목 : ',
+          authorLabel : '저자 : ',
+          pageLength: '',
+          header : '책 저자 폼'
+        },
+        components : {
+          'form-component' : formComponent
+        }
+      });
+    });
+  </script>
+  <div id="app2">
+    <!-- <form-component v-bind:author="authorLabel" v-bind:title="titleLabel">
+      <h1>{{header}}</h1>
+    </form-component> -->
+    <form-component>
+      <!-- 익명의 슬롯이 있다면넘어가고 슬롯이 없다면 사라짐 -->
+      <h1>{{header}}</h1>
+      <label for="title" slot="titleSlot">{{titleLabel}}</label>
+      <label for="author" slot="authorSlot">{{authorLabel}}</label>
+    </form-component>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function(){
+      let bookComponent = {
+        template : `<div>
+                      <slot name="header"></slot>
+                      <slot name="book"
+                            v-for="book in books"
+                            v-bind:text="book">
+                      </slot>
+                    </div>`,
+        props : ['books']
+      }
+
+      new Vue({
+        el : '#app3',
+        data : {
+          header : '책 제목',
+          books : [
+            { author: 'John Smith', title: 'Best of Times' },
+            { author: 'Jane Doe', title: 'Go West Young Man' },
+            { author: 'Avery Katz', title: 'The Life And Times of Avery' }
+          ]
+        },
+        components : {
+          'book-component' : bookComponent
+        }
+      });
+    });
+  </script>
+  <div id="app3">
+    <book-component v-bind:books="books">
+      <h1 slot="header">{{header}}</h1>
+      <!-- template: 태그에 대해 묶는 역할(특별한 역활없음 단순한 묶기만) -->
+      <template slot="book" slot-scope="props">
+        <h2>
+          <i>{{props.text.title}}</i>
+          <small>by : {{props.text.author}}</small>
+        </h2>
+      </template>
+    </book-component>
+  </div>
+</body>
+</html>
